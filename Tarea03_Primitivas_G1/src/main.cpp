@@ -6,6 +6,7 @@
 //============================================================================
 
 // Include standard headers
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -27,6 +28,7 @@
 GLFWwindow* window;
 
 using namespace glm;
+using namespace std;
 
 // Vertex array object (VAO)
 GLuint m_VAO[3];
@@ -37,8 +39,11 @@ GLuint m_VBO[3];
 // color buffer object (CBO)
 GLuint m_CBO[3];
 
+GLuint m_EBO[3];
 // GLSL program from the shaders
 GLuint programID;
+
+
 
 
 GLint WindowWidth = 600;
@@ -49,254 +54,145 @@ void transferDataToGPUMemory(void){
     // VAO n°1
     glGenVertexArrays(1, &m_VAO[0]);
     glBindVertexArray(m_VAO[0]);
-    //VBO n°2
+   /* //VBO n°2
     glGenVertexArrays(1, &m_VAO[1]);
-    glBindVertexArray(m_VAO[1]);
+    glBindVertexArray(m_VAO[1]);*/
 
     // Create and compile our GLSL program from the shaders
     programID = Utils::createShaderProgram("src/vertShader.glsl", "src/fragShader.glsl");
+    /*
     //vertices VAO n°2
     static const GLfloat g_vertex_buffer_data_1[]={0.0f,  0.0f, 0.0f,40.0f,  0.0f, 0.0f,0.0f,  40.0f, 0.0f};
     //colores VAO n°2
-    static const GLfloat g_color_buffer_data_1[]={1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f};
+    static const GLfloat g_color_buffer_data_1[]={1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f};*/
 
-    static const GLfloat g_vertex_buffer_data[] = {
-        -36.0f, -18.0f,  0.0f,
-        -18.0f,  0.0f,  0.0f,
-        -36.0f,  0.0f, 0.0f,
-		-36.0f, -18.0f,  0.0f,
-        -18.0f, -18.0f, 0.0f,
-		-18.0f,  0.0f,  0.0f,
-        -32.0f, -6.0f, 0.0f,
-        -30.0f, -3.0f, 0.0f,
-        -32.0f, -3.0f, 0.0f,
-        -32.0f, -6.0f, 0.0f,
-		-30.0f, -6.0f,  0.0f,
-		-30.0f, -3.0f, 0.0f,
-		-18.0f, -18.0f, 0.0f,
-		 26.0f, 22.0f, 0.0f,
-		-18.0f, 22.0f, 0.0f,
-		-18.0f, -18.0f, 0.0f,
-		 26.0f, -18.0f, 0.0f,
-		 26.0f, 22.0f, 0.0f,
-		-16.0f, -25.0f, 0.0f,
-		-10.0f, -18.0f, 0.0f,
-		-16.0f, -18.0f, 0.0f,
-		-16.0f, -25.0f, 0.0f,
-		-10.0f, -25.0f, 0.0f,
-		-10.0f, -18.0f, 0.0f,
-		-10.0f, -27.0f, 0.0f,
-		  0.0f, -18.0f, 0.0f,
-		-10.0f, -18.0f, 0.0f,
-		-10.0f, -27.0f, 0.0f,
-		  0.0f, -27.0f, 0.0f,
-		  0.0f, -18.0f, 0.0f,
-		  //sumarle 26 al x ya que las patas de la tortuga son las mismas
-		-16.0f+26.0f, -25.0f, 0.0f,
-		-10.0f+26.0f, -18.0f, 0.0f,
-		-16.0f+26.0f, -18.0f, 0.0f,
-		-16.0f+26.0f, -25.0f, 0.0f,
-		-10.0f+26.0f, -25.0f, 0.0f,
-		-10.0f+26.0f, -18.0f, 0.0f,
-		-10.0f+26.0f, -27.0f, 0.0f,
-		  0.0f+26.0f, -18.0f, 0.0f,
-		-10.0f+26.0f, -18.0f, 0.0f,
-		-10.0f+26.0f, -27.0f, 0.0f,
-		  0.0f+26.0f, -27.0f, 0.0f,
-		  0.0f+26.0f, -18.0f, 0.0f,
-		  //la cola
-		  26.0f, -18.0f, 0.0f,
-		  26.0f, -11.0f, 0.0f,
-		  36.0f, -18.0f, 0.0f,
-		  //cuadraditos del caparazon
-		  -13.0f, 13.0f, 0.0f,
-		  -2.0f, 21.0f, 0.0f,
-		  -13.0f, 21.0f, 0.0f,
-		  -13.0f, 13.0f, 0.0f,
-		  -2.0f, 13.0f, 0.0f,
-		  -2.0f, 21.0f, 0.0f,
-		   7.0f, 15.0f, 0.0f,
-		   15.0f, 21.0f, 0.0f,
-		   7.0f, 21.0f, 0.0f,
-		   7.0f, 15.0f, 0.0f,
-		   15.0f, 15.0f, 0.0f,
-		   15.0f, 21.0f, 0.0f,
-		  -17.0f, -6.0f, 0.0f,
-		  -11.0f, 6.0f, 0.0f,
-		  -17.0f, 6.0f, 0.0f,
-		  -17.0f, -6.0f, 0.0f,
-		  -11.0f, -6.0f, 0.0f,
-		  -11.0f, 6.0f, 0.0f,
-		  -4.0f, -2.0f, 0.0f,
-		   7.0f, 8.0f, 0.0f,
-		  -4.0f, 8.0f, 0.0f,
-		  -4.0f, -2.0f, 0.0f,
-		   7.0f, -2.0f, 0.0f,
-		   7.0f, 8.0f, 0.0f,
-		   13.0f, -3.0f, 0.0f,
-		   25.0f, 9.0f, 0.0f,
-		   13.0f, 9.0f, 0.0f,
-		   13.0f, -3.0f, 0.0f,
-		   25.0f, -3.0f, 0.0f,
-		   25.0f, 9.0f, 0.0f,
-		   -7.0f, -16.0f, 0.0f,
-		   4.0f, -9.0f, 0.0f,
-		   -7.0f, -9.0f, 0.0f,
-		   -7.0f, -16.0f, 0.0f,
-		   4.0f, -16.0f, 0.0f,
-		   4.0f, -9.0f, 0.0f,
-		   11.0f, -16.0f, 0.0f,
-		   19.0f, -8.0f, 0.0f,
-		   11.0f, -8.0f, 0.0f,
-		   11.0f, -16.0f, 0.0f,
-		   19.0f, -16.0f, 0.0f,
-		   19.0f, -8.0f, 0.0f,
-		   //boca de la tortuga
-		   -36.0f, -15.5f, 0.0f,
-		   -26.0f, -15.0f, 0.0f,
-		   -36.0f, -15.0f, 0.0f,
-		   -36.0f, -15.5f, 0.0f,
-		   -26.0f, -15.5f, 0.0f,
-		   -26.0f, -15.0f, 0.0f,
-
+    glGenBuffers(1, &m_VBO[0]);
+    GLfloat* m_Vertices = new GLfloat[315]{
+        -36.0f,  0.0f,  86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-18.0f,  0.0f,  86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-18.0f, -18.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-36.0f, -18.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-32.0f, -3.0f, 0.0f, 0.0f,  0.0f,
+		-30.0f, -3.0f, 0.0f, 0.0f,  0.0f,
+		-30.0f, -6.0f,  0.0f, 0.0f,  0.0f,
+		-32.0f, -6.0f, 0.0f, 0.0f,  0.0f,
+		-18.0f, 22.0f, 141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
+		26.0f, 22.0f, 141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
+		26.0f, -18.0f, 141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
+		 -18.0f, -18.0f, 141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
+		 -16.0f, -18.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,//
+		-10.0f, -18.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-10.0f, -25.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-16.0f, -25.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-10.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		0.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		0.0f, -27.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-10.0f, -27.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		10.0f, -18.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		16.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		16.0f, -25.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		10.0f, -25.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		16.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		26.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		26.0f, -27.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		16.0f, -27.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		-13.0f, 21.0f,65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		 -2.0f, 21.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		 -2.0f, 13.0f,65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+	     -13.0f, 13.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+	 	   7.0f, 21.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   15.0f, 21.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   15.0f, 15.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   7.0f, 15.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  -17.0f, 6.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  -11.0f, 6.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  -11.0f, -6.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  -17.0f, -6.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  -4.0f, 8.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  7.0f, 8.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  7.0f, -2.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		  -4.0f, -2.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   13.0f, 9.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   25.0f, 9.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   25.0f, -3.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   13.0f, -3.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   -7.0f, -9.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   4.0f, -9.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   4.0f, -16.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   -7.0f, -16.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   11.0f, -8.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   19.0f, -8.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   19.0f, -16.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   11.0f, -16.0f, 65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
+		   -36.0f, -15.0f, 0.0f, 0.0f,  0.0f,
+		   -26.0f, -15.0f, 0.0f, 0.0f,  0.0f,
+		   -26.0f, -15.5f, 0.0f, 0.0f,  0.0f,
+		   -36.0f, -15.5f, 0.0f, 0.0f,  0.0f,
+		   26.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+		   26.0f, -11.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
+	       36.0f, -18.0f,86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f
     };
 
-    // One color for each vertex. They were generated randomly.
-    static const GLfloat g_color_buffer_data[] = {
-        86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-        0.0f,  0.0f,  0.0f,
-        0.0f,  0.0f,  0.0f,
-        0.0f,  0.0f,  0.0f,
-		0.0f,  0.0f,  0.0f,
-		0.0f,  0.0f,  0.0f,
-		0.0f,  0.0f,  0.0f,
-		141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
-		141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
-		141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
-		141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
-		141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
-		141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,//color de la cola
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-		65.0f/255.0f,  79.0f/255.0f,  43.0f/255.0f,
-				0.0f,  0.0f,  0.0f,
-		        0.0f,  0.0f,  0.0f,
-		        0.0f,  0.0f,  0.0f,
-				0.0f,  0.0f,  0.0f,
-				0.0f,  0.0f,  0.0f,
-				0.0f,  0.0f,  0.0f,
-    };
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+    	// Reserva memoria na GPU para um TARGET receber dados
+    	// Copia esses dados pra essa área de memoria
+    	glBufferData(
+    			GL_ARRAY_BUFFER,	// TARGET associado ao nosso buffer
+				315 * sizeof(GLfloat),	// tamanho do buffer
+    			m_Vertices,			// Dados a serem copiados pra GPU
+    			GL_STATIC_DRAW);		// Política de acesso aos dados, para otimização
 
-    // Move vertex data to video memory; specifically to VBO called m_VBO
-    glGenBuffers(1, &m_VBO[0]);//m_VBO[0]
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);//m_VBO[0]
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(g_vertex_buffer_data),//g_vertex_buffer_data
-        g_vertex_buffer_data,//g_vertex_buffer_data
-        GL_STATIC_DRAW);
+        glGenBuffers(1, &m_EBO[0]);
+        GLuint elements[] = {//2 triangulos por cada cuadrado
+			2, 3, 0,0, 1, 2,
+			6,7,4,4,5,6,
+			10,11,8,8,9,10,
+			14,15,12,12,13,14,
+			18,19,16,16,17,18,
+			22,23,20,20,21,22,
+			26,27,24,24,25,26,
+			30,31,28,28,29,30,
+			34,35,32,32,33,34,
+			38,39,36,36,37,38,
+			42,43,40,40,41,42,
+			46,47,44,44,45,46,
+			50,51,48,48,49,50,
+			54,55,52,52,53,54,
+			58,59,56,56,57,58,
+			60,61,62//triangulito
+        };
+    	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO[0]);
+    	glBufferData(
+    			GL_ELEMENT_ARRAY_BUFFER,
+    			sizeof(elements),
+    			elements,
+    			GL_STATIC_DRAW);
 
-    // Move color data to video memory; specifically to CBO called m_CBO
-    glGenBuffers(1, &m_CBO[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CBO[0]);
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(g_color_buffer_data),
-        g_color_buffer_data,
-        GL_STATIC_DRAW);
-    //PARA EL VBO N°2 Y CBO N°2
-    glGenBuffers(1, &m_VBO[1]);
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-        glBufferData(
-            GL_ARRAY_BUFFER,
-            sizeof(g_vertex_buffer_data_1),
-            g_vertex_buffer_data_1,
-            GL_STATIC_DRAW);
-        // Move color data to video memory; specifically to CBO called m_CBO
-	glGenBuffers(1, &m_CBO[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, m_CBO[1]);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		sizeof(g_color_buffer_data_1),
-		g_color_buffer_data_1,
-		GL_STATIC_DRAW);
+    	// Specify the layout of the vertex data
+		GLint posAttrib = glGetAttribLocation(programID, "vertexPosition");
+		glEnableVertexAttribArray(posAttrib);
+		glVertexAttribPointer(
+				posAttrib,
+				2,
+				GL_FLOAT,
+				GL_FALSE,
+				5 * sizeof(GLfloat),
+				0);
 
+		GLint colAttrib = glGetAttribLocation(programID, "vertexColor");
+		glEnableVertexAttribArray(colAttrib);
+		glVertexAttribPointer(
+				colAttrib,
+				3,
+				GL_FLOAT,
+				GL_FALSE,
+				5 * sizeof(GLfloat),
+				(void*) (2 * sizeof(GLfloat)));
 }
 
 
 //--------------------------------------------------------------------------------
+
 void cleanupDataFromGPU(){
     glDeleteBuffers(1, &m_VBO[0]);
     glDeleteBuffers(1, &m_CBO[0]);
@@ -308,96 +204,15 @@ void cleanupDataFromGPU(){
 
     glDeleteProgram(programID);
 }
+
+//--------------------------------------------------------------------------------
+
 void draw(void){
 	glUseProgram(programID);
 	glm::mat4 mvp = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f);
 	GLuint matrix = glGetUniformLocation(programID, "mvp");
-	    glUniformMatrix4fv(matrix, 1, GL_FALSE, &mvp[0][0]);
-	    glEnableVertexAttribArray(0);
-	        glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-	        glVertexAttribPointer(
-	                              0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-	                              3,                  // size
-	                              GL_FLOAT,           // type
-	                              GL_FALSE,           // normalized?
-	                              0,                  // stride
-	                              (void*)0            // array buffer offset
-	                              );
-
-	        // 2nd attribute buffer : colors
-	        glEnableVertexAttribArray(1);
-	        glBindBuffer(GL_ARRAY_BUFFER, m_CBO[1]);
-	        glVertexAttribPointer(
-	                              1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-	                              3,                                // size
-	                              GL_FLOAT,                         // type
-	                              GL_FALSE,                         // normalized?
-	                              0,                                // stride
-	                              (void*)0                          // array buffer offset
-	                              );
-
-
-	        //glEnable(GL_PROGRAM_POINT_SIZE);
-	        //glPointSize(10);
-	        // Draw the triangle !
-	        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
-	        //glDrawArrays(GL_LINES, 0, 6); // 3 indices starting at 0 -> 1 triangle
-	        glDisableVertexAttribArray(0);
-	        glDisableVertexAttribArray(1);
-
-}
-//-----------DIBUJO DE LA TORTUGA---------------------
-void drawTortuga (void){
-    // Use our shader
-    glUseProgram(programID);
-
-    // create transformations
-    //glm::mat4 model = glm::mat4(1.0f);
-    //glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 mvp = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f);
-
-    // Our ModelViewProjection : multiplication of our 3 matrices
-    //glm::mat4 mvp = projection * view * model;
-    // Remember, matrix multiplication is the other way around
-
-    // retrieve the matrix uniform locations
-    GLuint matrix = glGetUniformLocation(programID, "mvp");
-    glUniformMatrix4fv(matrix, 1, GL_FALSE, &mvp[0][0]);
-
-
-    // 1rst attribute buffer : vertices
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-    glVertexAttribPointer(
-                          0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                          3,                  // size
-                          GL_FLOAT,           // type
-                          GL_FALSE,           // normalized?
-                          0,                  // stride
-                          (void*)0            // array buffer offset
-                          );
-
-    // 2nd attribute buffer : colors
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CBO[0]);
-    glVertexAttribPointer(
-                          1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                          3,                                // size
-                          GL_FLOAT,                         // type
-                          GL_FALSE,                         // normalized?
-                          0,                                // stride
-                          (void*)0                          // array buffer offset
-                          );
-
-
-    //glEnable(GL_PROGRAM_POINT_SIZE);
-    //glPointSize(10);
-    // Draw the triangle !
-    glDrawArrays(GL_TRIANGLES, 0, 93); // 3 indices starting at 0 -> 1 triangle
-    //glDrawArrays(GL_LINES, 0, 6); // 3 indices starting at 0 -> 1 triangle
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
+	glUniformMatrix4fv(matrix, 1, GL_FALSE, &mvp[0][0]);
+	glDrawElements(GL_TRIANGLES, 100, GL_UNSIGNED_INT, 0);
 }
 //--------------------------------------------------------------------------------
 
@@ -449,7 +264,7 @@ int main( void )
          * */
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, WindowWidth*0.5, WindowHeight*0.5);
-        drawTortuga();
+        draw();
 
 
         /*
@@ -468,7 +283,7 @@ int main( void )
          * */
         //left top
         glViewport(0, WindowHeight*0.5, WindowWidth*0.5, WindowHeight*0.5);
-        draw();
+        //draw();
 
 
         /*
