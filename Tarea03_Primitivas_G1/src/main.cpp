@@ -29,13 +29,13 @@ GLFWwindow* window;
 using namespace glm;
 
 // Vertex array object (VAO)
-GLuint m_VAO;
+GLuint m_VAO[3];
 
 // Vertex buffer object (VBO)
-GLuint m_VBO;
+GLuint m_VBO[3];
 
 // color buffer object (CBO)
-GLuint m_CBO;
+GLuint m_CBO[3];
 
 // GLSL program from the shaders
 GLuint programID;
@@ -46,12 +46,19 @@ GLint WindowHeight = 600;
 
 //--------------------------------------------------------------------------------
 void transferDataToGPUMemory(void){
-    // VAO
-    glGenVertexArrays(1, &m_VAO);
-    glBindVertexArray(m_VAO);
+    // VAO n°1
+    glGenVertexArrays(1, &m_VAO[0]);
+    glBindVertexArray(m_VAO[0]);
+    //VBO n°2
+    glGenVertexArrays(1, &m_VAO[1]);
+    glBindVertexArray(m_VAO[1]);
 
     // Create and compile our GLSL program from the shaders
     programID = Utils::createShaderProgram("src/vertShader.glsl", "src/fragShader.glsl");
+    //vertices VAO n°2
+    static const GLfloat g_vertex_buffer_data_1[]={0.0f,  0.0f, 0.0f,40.0f,  0.0f, 0.0f,0.0f,  40.0f, 0.0f};
+    //colores VAO n°2
+    static const GLfloat g_color_buffer_data_1[]={1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f,1.0f,1.0f, 1.0f};
 
     static const GLfloat g_vertex_buffer_data[] = {
         -36.0f, -18.0f,  0.0f,
@@ -253,35 +260,94 @@ void transferDataToGPUMemory(void){
     };
 
     // Move vertex data to video memory; specifically to VBO called m_VBO
-    glGenBuffers(1, &m_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glGenBuffers(1, &m_VBO[0]);//m_VBO[0]
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);//m_VBO[0]
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(g_vertex_buffer_data),
-        g_vertex_buffer_data,
+        sizeof(g_vertex_buffer_data),//g_vertex_buffer_data
+        g_vertex_buffer_data,//g_vertex_buffer_data
         GL_STATIC_DRAW);
 
     // Move color data to video memory; specifically to CBO called m_CBO
-    glGenBuffers(1, &m_CBO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CBO);
+    glGenBuffers(1, &m_CBO[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, m_CBO[0]);
     glBufferData(
         GL_ARRAY_BUFFER,
         sizeof(g_color_buffer_data),
         g_color_buffer_data,
         GL_STATIC_DRAW);
+    //PARA EL VBO N°2 Y CBO N°2
+    glGenBuffers(1, &m_VBO[1]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            sizeof(g_vertex_buffer_data_1),
+            g_vertex_buffer_data_1,
+            GL_STATIC_DRAW);
+        // Move color data to video memory; specifically to CBO called m_CBO
+	glGenBuffers(1, &m_CBO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_CBO[1]);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		sizeof(g_color_buffer_data_1),
+		g_color_buffer_data_1,
+		GL_STATIC_DRAW);
 
 }
+
 
 //--------------------------------------------------------------------------------
 void cleanupDataFromGPU(){
-    glDeleteBuffers(1, &m_VBO);
-    glDeleteBuffers(1, &m_CBO);
-    glDeleteVertexArrays(1, &m_VAO);
+    glDeleteBuffers(1, &m_VBO[0]);
+    glDeleteBuffers(1, &m_CBO[0]);
+    glDeleteVertexArrays(1, &m_VAO[0]);
+
+    glDeleteBuffers(1, &m_VBO[1]);
+    glDeleteBuffers(1, &m_CBO[1]);
+    glDeleteVertexArrays(1, &m_VAO[1]);
+
     glDeleteProgram(programID);
 }
+void draw(void){
+	glUseProgram(programID);
+	glm::mat4 mvp = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f);
+	GLuint matrix = glGetUniformLocation(programID, "mvp");
+	    glUniformMatrix4fv(matrix, 1, GL_FALSE, &mvp[0][0]);
+	    glEnableVertexAttribArray(0);
+	        glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+	        glVertexAttribPointer(
+	                              0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	                              3,                  // size
+	                              GL_FLOAT,           // type
+	                              GL_FALSE,           // normalized?
+	                              0,                  // stride
+	                              (void*)0            // array buffer offset
+	                              );
 
-//--------------------------------------------------------------------------------
-void draw (void){
+	        // 2nd attribute buffer : colors
+	        glEnableVertexAttribArray(1);
+	        glBindBuffer(GL_ARRAY_BUFFER, m_CBO[1]);
+	        glVertexAttribPointer(
+	                              1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+	                              3,                                // size
+	                              GL_FLOAT,                         // type
+	                              GL_FALSE,                         // normalized?
+	                              0,                                // stride
+	                              (void*)0                          // array buffer offset
+	                              );
+
+
+	        //glEnable(GL_PROGRAM_POINT_SIZE);
+	        //glPointSize(10);
+	        // Draw the triangle !
+	        glDrawArrays(GL_TRIANGLES, 0, 3); // 3 indices starting at 0 -> 1 triangle
+	        //glDrawArrays(GL_LINES, 0, 6); // 3 indices starting at 0 -> 1 triangle
+	        glDisableVertexAttribArray(0);
+	        glDisableVertexAttribArray(1);
+
+}
+//-----------DIBUJO DE LA TORTUGA---------------------
+void drawTortuga (void){
     // Use our shader
     glUseProgram(programID);
 
@@ -301,7 +367,7 @@ void draw (void){
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     glVertexAttribPointer(
                           0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
                           3,                  // size
@@ -313,7 +379,7 @@ void draw (void){
 
     // 2nd attribute buffer : colors
     glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, m_CBO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_CBO[0]);
     glVertexAttribPointer(
                           1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
                           3,                                // size
@@ -383,7 +449,7 @@ int main( void )
          * */
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, WindowWidth*0.5, WindowHeight*0.5);
-        draw();
+        drawTortuga();
 
 
         /*
@@ -402,7 +468,7 @@ int main( void )
          * */
         //left top
         glViewport(0, WindowHeight*0.5, WindowWidth*0.5, WindowHeight*0.5);
-        //draw();
+        draw();
 
 
         /*
