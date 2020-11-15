@@ -1,0 +1,6 @@
+git add -A
+git status
+git commit -m "comentario del commit"
+git push origin master
+
+//Ingresar contra y user y ya :)
