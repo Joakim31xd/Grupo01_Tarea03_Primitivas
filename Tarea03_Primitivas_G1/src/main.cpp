@@ -113,8 +113,7 @@ void GenerarSemiCirculo(GLfloat Radio, GLfloat x, GLfloat y, GLfloat z,GLuint A,
 		GLfloat verticesX[numeroVertices];
 		GLfloat verticesY[numeroVertices];
 		GLfloat verticesZ[numeroVertices];
-		//x=x+(radius * cos(A * twicePi / 360));
-		//y=y+(radius * sin(A * twicePi / 360));
+
 		verticesX[0] = (radius * cos(A * twicePi / 360));
 		verticesY[0] = (radius * sin(A * twicePi/ 360));
 		verticesZ[0] = z;
@@ -267,12 +266,12 @@ void SumarPosicionPuntero(){
 
 //--------------------------------------------------------------------------------
 void DibujoICuadrante(){
-	m_VBO= new GLuint[4];
-	m_CBO= new GLuint[4];
+	m_VBO= new GLuint[6];
+	m_CBO= new GLuint[6];
 	glBindVertexArray(m_VAO[0]);
-	glGenBuffers(4, m_VBO);
-	glGenBuffers(4, m_CBO);
-	GenerarCirculo(20.0, 0.0f,0.0f,0.0f,1.0f,1.0f,0.0f);
+	glGenBuffers(6, m_VBO);
+	glGenBuffers(6, m_CBO);
+	GenerarCirculo(20.0, 0.0f,0.0f,0.0f,255.0f/255.0f,229.0f/255.0f,37.0f/255.0f);
 	draw(5);
 	GenerarCirculo(20.0, 0.0f,0.0f,0.0f,0.0f,0.0f,0.0f);
 	draw(3);
@@ -287,22 +286,24 @@ void DibujoICuadrante(){
 	GenerarCirculo(3.0, -5.0f,5.0f,0.0f,0.0f,0.0f,0.0f);
 	draw(3);
 	SumarPosicionPuntero();
+	GenerarCirculo(1.5, 5.0f,5.0f,0.0f,0.0f,0.0f,0.0f);
+	draw(5);
+	SumarPosicionPuntero();
+	GenerarCirculo(1.5, -5.0f,5.0f,0.0f,0.0f,0.0f,0.0f);
+	draw(5);
+	SumarPosicionPuntero();
 	GenerarSemiCirculo(10.0, 0.0f,-2.0f,0.0f,180,0.0f,0.0f,0.0f);
 	draw(2);
 	ReiniciarPuntero();
 }
 //--------------------------------------------------------------------------------
 void DibujoIICuadrante(){
-	m_VBO= new GLuint[4];
-	m_CBO= new GLuint[4];
+	m_VBO= new GLuint[10];
+	m_CBO= new GLuint[10];
 	glBindVertexArray(m_VAO[1]);
-	glGenBuffers(4, m_VBO);
-	glGenBuffers(4, m_CBO);
-	GenerarCirculo(18.39, -11.61f,-10.47f,0.0f,0.66f,0.66f,0.66f);
-	draw(5);
-	GenerarCirculo(18.39, -11.61f,-10.47f,0.0f,0.0f,0.0f,0.0f);
-	draw(3);
-	SumarPosicionPuntero();
+	glGenBuffers(10, m_VBO);
+	glGenBuffers(10, m_CBO);
+
 	GenerarCirculo(11.02, -12.11f,18.98f,0.0f,0.66f,0.66f,0.66f);
 	draw(5);
 	GenerarCirculo(11.02, -12.11f,18.98f,0.0f,0.0f,0.0f,0.0f);
@@ -317,6 +318,35 @@ void DibujoIICuadrante(){
 	draw(5);
 	GenerarCirculo(3.85,-1.61f,29.23f,0.0f,0.0f,0.0f,0.0f);
 	draw(3);
+	SumarPosicionPuntero();
+	GenerarSemiCirculo(14.0f, 2.14f,-21.42f,0.0f,215.0f ,0.0f,0.0f,0.0f);
+	draw(2);
+	SumarPosicionPuntero();
+	GenerarCirculo(18.39, -11.61f,-10.47f,0.0f,0.66f,0.66f,0.66f);
+	draw(5);
+	GenerarCirculo(18.39, -11.61f,-10.47f,0.0f,0.0f,0.0f,0.0f);
+	draw(3);
+	SumarPosicionPuntero();
+	GenerarCirculo(3.0, -17.0f, 22.0f,0.0f,1.0f,1.0f,1.0f);
+	draw(5);
+	GenerarCirculo(3.0, -17.0f, 22.0f,0.0f,0.0f,0.0f,0.0f);
+	draw(3);
+	SumarPosicionPuntero();
+	GenerarCirculo(1.5, -17.0f, 22.0f,0.0f,0.0f,0.0f,0.0f);
+	draw(5);
+	SumarPosicionPuntero();
+	GenerarCirculo(3.0, -8.0f, 22.0f,0.0f,1.0f,1.0f,1.0f);
+	draw(5);
+	GenerarCirculo(3.0, -8.0f, 22.0f,0.0f,0.0f,0.0f,0.0f);
+	draw(3);
+	SumarPosicionPuntero();
+	GenerarCirculo(1.5, -8.0f, 22.0f,0.0f,0.0f,0.0f,0.0f);
+	draw(5);
+	SumarPosicionPuntero();
+	GenerarSemiCirculo(3.00f, -12.71f, 16.54f,0.0f,215.0f, 1.0f,1.0f,1.0f);
+	draw(5);
+
+
 	ReiniciarPuntero();
 }
 //--------------------------------------------------------------------------------
@@ -335,13 +365,13 @@ void DibujoIIICuadrante(){
 	GenerarRectangulo(40.0f,44.0f,-18.0f, -18.0f, 0.0f, 141.0f/255.0f,  169.0f/255.0f,  95.0f/255.0f);
 	draw(4);
 	SumarPosicionPuntero();
-	GenerarRectangulo(7.0f,6.0f,-16.0f, -25.0f, 0.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f);
+	GenerarRectangulo(7.0f,6.0f,-16.0f, -25.0f, 0.0f, 67.0f/255.0f,  130.0f/255.0f,  65.0f/255.0f);
 	draw(4);
 	SumarPosicionPuntero();
 	GenerarRectangulo(9.0f, 10.0f, -10.0f, -27.0f, 0.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f);
 	draw(4);
 	SumarPosicionPuntero();
-	GenerarRectangulo(7.0f,6.0f, 10.0f, -25.0f, 0.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f);
+	GenerarRectangulo(7.0f,6.0f, 10.0f, -25.0f, 0.0f, 67.0f/255.0f,  130.0f/255.0f,  65.0f/255.0f);
 	draw(4);
 	SumarPosicionPuntero();
 	GenerarRectangulo(9.0f, 10.0f, 16.0f, -27.0f, 0.0f, 86.0f/255.0f,  166.0f/255.0f,  72.0f/255.0f);
@@ -491,7 +521,7 @@ int main( void )
     // render scene for each frame
     do{
         // White background
-        glClearColor(144.0f/255.0f, 255.0f/255.0f, 203.0f/255.0f, 0.0f);
+        glClearColor(253.0f/255.0f, 255.0f/255.0f, 137.0f/255.0f, 0.46f);
 
         // Clear the screen
         glClear( GL_COLOR_BUFFER_BIT );
